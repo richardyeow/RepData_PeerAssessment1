@@ -123,10 +123,15 @@ sum(is.na(Activity$steps))
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+Below will show the code in using 5-minute interval to fill in the missing data 
 
 ```r
+## Duplicate the Activity data into new set of data
 Activity2 <- Activity
+## Count NA in the Steps
 NAList <- is.na(Activity$steps)
+
+## Fill up the missing step with the mean for 5=minute interval on that day.
 MeanInterval <- tapply(Activity2$steps, Activity2$interval, mean, na.rm=TRUE, simplify = TRUE)
 Activity2$steps[NAList] <- MeanInterval[as.character(Activity2$interval[NAList])]
 ```
@@ -136,10 +141,10 @@ Activity2$steps[NAList] <- MeanInterval[as.character(Activity2$interval[NAList])
 
 
 ```r
-TotalSteps2 <-  aggregate(steps ~ date, data = Activity, FUN = sum, na.rm = TRUE)
+TotalSteps2 <-  aggregate(steps ~ date, data = Activity2, FUN = sum, na.rm = TRUE)
 
 hist(TotalSteps2$steps, 
-        main="Total Steps per Day (without Missing Value)", 
+        main = "Total Steps per Day (without Missing Value)", 
         xlab = "Number of steps per day", 
         ylab = "Frequency")
 ```
@@ -161,7 +166,7 @@ median(TotalSteps2$step)
 ```
 
 ```
-## [1] 10765
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -207,7 +212,7 @@ ggplot(Activity2, aes(x = interval , y = steps, color = weektype)) +
        labs(title = "Average Daily Steps by Week Type", 
             x = "Interval", 
             y = "Number of steps") +
-       facet_wrap(~ weektype, ncol = 1, nrow=2)
+       facet_wrap(~ weektype, ncol = 1, nrow = 2)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
